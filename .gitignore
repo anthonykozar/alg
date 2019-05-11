@@ -10,3 +10,5 @@
 src/version.ml
 src/_build
 _build
+.DS_Store
+src/alg.native
