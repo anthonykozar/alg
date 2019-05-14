@@ -255,16 +255,12 @@ try begin (*A big wrapper for error reporting. *)
   in
 
   let counts = ref [] in
-  
-  (* Commutative law *)
-  let test_eq = (2, (T.Binary (0, T.Var 1, T.Var 0), T.Binary (0, T.Var 0, T.Var 1))) in
-  
+
   (* The main loop *)
   begin
     Sys.catch_break true ;
     out.header () ;
     print_endline (Theory.string_of_theory theory) ;
-    print_endline ("Test equation: " ^ (Theory.string_of_equation (snd test_eq)) ^ "\n") ;
     if config.count_only then out.count_header () ;
     begin 
       try
@@ -278,8 +274,7 @@ try begin (*A big wrapper for error reporting. *)
               if not config.indecomposable_only || indecomposable then incr k ;
               algebra.Algebra.alg_name <- Some (theory.Theory.th_name ^ "_" ^ string_of_int n ^ "_" ^ string_of_int !k) ;
               if not config.count_only && (not config.indecomposable_only || indecomposable)
-              then out.algebra algebra ; 
-                print_endline ("Test equation is " ^ (string_of_bool (CM.check_equation algebra test_eq)))
+              then out.algebra algebra
             in
             process_size n output ;
             counts := (n, !k) :: !counts ;

@@ -170,6 +170,9 @@ let env_to_array lst =
     List.iter (fun (op,k) -> a.(k) <- op) lst ;
     a
 
+(* Commutative law *)
+let test_commutative = (2, (T.Binary (0, T.Var 1, T.Var 0), T.Binary (0, T.Var 0, T.Var 1)))
+
 let cook_theory th_name lst =
   let (env, eqs, axs) = split_entries lst in
     match Util.find_duplicate (List.map fst (env.const @ env.unary @ env.binary)) with
@@ -184,4 +187,5 @@ let cook_theory th_name lst =
             T.th_relations = env_to_array env.relations;
             T.th_equations = List.map (cook_equation env) eqs;
             T.th_axioms = List.map (cook_formula env) axs;
+            T.th_prop_tests = [test_commutative];
           }

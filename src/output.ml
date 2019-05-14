@@ -34,7 +34,7 @@ sig
   val footer : out_channel -> unit
   val code : out_channel -> string list -> unit
   val warning : out_channel -> string -> unit
-  val algebra_header : out_channel -> string -> string option -> unit
+  val algebra_header : out_channel -> string -> string option -> string option -> unit
   val algebra_unary : out_channel -> string array -> string -> int array -> unit
   val algebra_binary : out_channel -> string array -> string -> int array array -> unit
   val algebra_predicate : out_channel -> string array -> string -> int array -> unit
@@ -65,7 +65,7 @@ struct
       ch
       src_lines
       ({T.th_name=th_name; T.th_const=th_const; T.th_unary=th_unary; T.th_binary=th_binary;
-        T.th_predicates=th_pred; T.th_relations=th_rel} as th) =
+        T.th_predicates=th_pred; T.th_relations=th_rel; T.th_prop_tests=th_tests} as th) =
 
     let count_footer lst =
       let lst = List.filter (fun (n,_) -> n >= 2) lst in
@@ -98,8 +98,17 @@ struct
                 | Some lst -> Some ("Decomposition: " ^ String.concat ", " (List.map S.ttfont lst))
               end
             in
+            let props = [ ("commutative", (Check_model.check_equation a (List.hd th_tests))) ] in (* this sd be in algebra *)
+            let propstext = 
+              begin match props with
+                | [] -> None
+                | _ -> Some ("Properties: " ^ (String.concat ", " (List.map 
+                              (fun (pname, ptruthval) -> if ptruthval then pname else ("not " ^ pname))
+                              props)))
+              end
+            in
             let ns = S.names th a in
-            S.algebra_header ch name info ;
+            S.algebra_header ch name info propstext ;
             Array.iteri (fun op t -> S.algebra_unary ch ns th_unary.(op) t) unary ;
             Array.iteri (fun op t -> S.algebra_binary ch ns th_binary.(op) t) binary ;
             Array.iteri (fun p t -> S.algebra_predicate ch ns th_pred.(p) t) pred ;
@@ -168,11 +177,16 @@ struct
       
   let warning ch msg = Printf.fprintf ch "\n\n**Warning: %s**\n\n" msg
 
-  let algebra_header ch name info =
+  let algebra_header ch name info info2 =
     Printf.fprintf ch "### %s\n\n" name ;
-    match info with
+    begin match info with
       | None -> ()
       | Some msg -> Printf.fprintf ch "%s\n\n" msg
+    end ;
+    begin match info2 with
+      | None -> ()
+      | Some msg -> Printf.fprintf ch "%s\n\n" msg
+    end
 
   let algebra_unary ch names op t =
     let n = Array.length t in
@@ -293,11 +307,16 @@ struct
       
   let warning ch msg = Printf.fprintf ch "\n\n<blockquote><b>Warning: %s</b></blockquote>\n\n" msg
 
-  let algebra_header ch name info =
+  let algebra_header ch name info info2 =
     Printf.fprintf ch "<h3>%s</h3>\n\n" name ;
-    match info with
+    begin match info with
       | None -> ()
       | Some msg -> Printf.fprintf ch "<p>%s</p>\n\n" msg
+    end ;
+    begin match info with
+      | None -> ()
+      | Some msg -> Printf.fprintf ch "<p>%s</p>\n\n" msg
+    end
 
   let algebra_unary ch names op t =
     let n = Array.length t in
@@ -432,11 +451,16 @@ struct
       
   let warning ch msg = Printf.fprintf ch "\\begin{center}\\textbf{Warning: %s}\\end{center}\n" msg
 
-  let algebra_header ch name info =
+  let algebra_header ch name info info2 =
     Printf.fprintf ch "\\subsection*{%s}\n\n" (escape name) ;
-    match info with
+    begin match info with
       | None -> ()
       | Some msg -> Printf.fprintf ch "\n\n\\noindent\n%s\n\n" msg
+    end ;
+    begin match info2 with
+      | None -> ()
+      | Some msg -> Printf.fprintf ch "\n\n\\noindent\n%s\n\n" msg
+    end
 
   let algebra_unary ch names op t =
     let n = Array.length t in

@@ -49,7 +49,8 @@ type theory = {
   th_predicates : relation_name array;
   th_relations : relation_name array;
   th_equations : equation list;
-  th_axioms : formula list
+  th_axioms : formula list;
+  th_prop_tests : equation list
 }
 
 (* Used to indicate that a permanent inconsistency has been discovered. *)
@@ -113,7 +114,8 @@ let string_of_theory {th_name=name;
                       th_predicates=predicates;
                       th_relations=relations;
                       th_equations=equations;
-                      th_axioms=axioms} =
+                      th_axioms=axioms;
+                      th_prop_tests=tests} =
   "Theory: " ^ name ^ "\n" ^
   "Constant: " ^ String.concat " " (Array.to_list const) ^ "\n" ^
   "Unary: " ^ String.concat " " (Array.to_list unary) ^ "\n" ^
@@ -121,4 +123,5 @@ let string_of_theory {th_name=name;
   "Predicates: " ^ String.concat " " (Array.to_list predicates) ^ "\n" ^
   "Relations: " ^ String.concat " " (Array.to_list relations) ^ "\n" ^
   "Equations:\n" ^ String.concat "\n" (List.map (fun (_,e) -> string_of_equation e) equations) ^ "\n" ^
-  "Axioms:\n" ^ String.concat "\n" (List.map string_of_formula axioms) ^ "\n"
+  "Axioms:\n" ^ String.concat "\n" (List.map string_of_formula axioms) ^ "\n" ^
+  "Tests:\n" ^ String.concat "\n" (List.map (fun (_,e) -> string_of_equation e) tests) ^ "\n"
