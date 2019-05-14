@@ -19,6 +19,13 @@ let check_model {th_equations=equations; th_axioms=axioms} alg =
       (ntuples n num_vars) in
   List.for_all check_eq equations && List.for_all (FO.check_formula alg) axioms
 
+(* Standalone function for checking if model satisfies one equation -- akozar 20190513 *)
+let check_equation alg (num_vars, eq) = 
+  let n = alg.alg_size in 
+  array_for_all 
+	(fun vars -> let (rl, rr) = eval_eq alg vars eq in rl = rr)
+	(ntuples n num_vars)
+
 
 (* Naive checking of isomorphisms. *)
 
