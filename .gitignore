@@ -11,4 +11,6 @@ src/version.ml
 src/_build
 _build
 .DS_Store
+notes
 src/alg.native
+src/alg.byte
