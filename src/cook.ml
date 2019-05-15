@@ -171,7 +171,18 @@ let env_to_array lst =
     a
 
 (* Commutative law *)
-let test_commutative = (2, (T.Binary (0, T.Var 1, T.Var 0), T.Binary (0, T.Var 0, T.Var 1)))
+let test_commutative = ("commutative", (2, (T.Binary (0, T.Var 1, T.Var 0), T.Binary (0, T.Var 0, T.Var 1))))
+
+(* Idempotent law *)
+let test_idempotent = ("idempotent", (1, (T.Binary (0, T.Var 0, T.Var 0), T.Var 0)))
+
+(* Left Semimedial law *)
+let test_left_semimedial = ("left_semimedial", (3, (T.Binary (0, (T.Binary (0, T.Var 0, T.Var 0)), (T.Binary (0, T.Var 1, T.Var 2))),
+                                                    T.Binary (0, (T.Binary (0, T.Var 0, T.Var 1)), (T.Binary (0, T.Var 0, T.Var 2))))))
+
+(* Right Semimedial law *)
+let test_right_semimedial = ("right_semimedial", (3, (T.Binary (0, (T.Binary (0, T.Var 1, T.Var 2)), (T.Binary (0, T.Var 0, T.Var 0))),
+                                                      T.Binary (0, (T.Binary (0, T.Var 1, T.Var 0)), (T.Binary (0, T.Var 2, T.Var 0))))))
 
 let cook_theory th_name lst =
   let (env, eqs, axs) = split_entries lst in
@@ -187,5 +198,5 @@ let cook_theory th_name lst =
             T.th_relations = env_to_array env.relations;
             T.th_equations = List.map (cook_equation env) eqs;
             T.th_axioms = List.map (cook_formula env) axs;
-            T.th_prop_tests = [test_commutative];
+            T.th_prop_tests = [test_commutative; test_idempotent; test_left_semimedial; test_right_semimedial];
           }

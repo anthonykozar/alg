@@ -41,6 +41,9 @@ type formula' =
    of the formula. *)
 and formula = int array * formula'
 
+(* A  named property to be tested on each model *)
+type propertytest = string * equation
+
 type theory = {
   th_name : string;
   th_const : operation_name array;
@@ -50,7 +53,7 @@ type theory = {
   th_relations : relation_name array;
   th_equations : equation list;
   th_axioms : formula list;
-  th_prop_tests : equation list
+  th_prop_tests : propertytest list
 }
 
 (* Used to indicate that a permanent inconsistency has been discovered. *)
@@ -107,6 +110,8 @@ let rec string_of_formula' = function
 
 let string_of_formula (a, f) = string_of_int (Array.length a) ^ " |- " ^ string_of_formula' f
 
+let string_of_propertytest (nm, (_, e)) = nm ^ ": " ^ (string_of_equation e)
+
 let string_of_theory {th_name=name;
                       th_const=const;
                       th_unary=unary;
@@ -124,4 +129,4 @@ let string_of_theory {th_name=name;
   "Relations: " ^ String.concat " " (Array.to_list relations) ^ "\n" ^
   "Equations:\n" ^ String.concat "\n" (List.map (fun (_,e) -> string_of_equation e) equations) ^ "\n" ^
   "Axioms:\n" ^ String.concat "\n" (List.map string_of_formula axioms) ^ "\n" ^
-  "Tests:\n" ^ String.concat "\n" (List.map (fun (_,e) -> string_of_equation e) tests) ^ "\n"
+  "Tests:\n" ^ String.concat "\n" (List.map string_of_propertytest tests) ^ "\n"

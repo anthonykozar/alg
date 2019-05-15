@@ -98,7 +98,8 @@ struct
                 | Some lst -> Some ("Decomposition: " ^ String.concat ", " (List.map S.ttfont lst))
               end
             in
-            let props = [ ("commutative", (Check_model.check_equation a (List.hd th_tests))) ] in (* this sd be in algebra *)
+            (* Evaluation of property tests sd be in algebra *)
+            let props = List.map (fun (pname, pformula) -> (pname, (Check_model.check_equation a pformula))) th_tests in
             let propstext = 
               begin match props with
                 | [] -> None
