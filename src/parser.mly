@@ -4,7 +4,7 @@
 
 %token THEORY
 %token CONSTANT UNARY BINARY PREDICATE RELATION
-%token AXIOM THEOREM
+%token AXIOM THEOREM PROPTEST
 %token <string> IDENT
 %token <string> PREFIXOP INFIXOP0 INFIXOP1 INFIXOP2 INFIXOP3 INFIXOP4
 %token LPAREN RPAREN
@@ -46,6 +46,8 @@ theory_entry:
     { Axiom (n, a) }
   | THEOREM n = option(IDENT) COLON a = expr
     { Axiom (n, a) }
+  | PROPTEST n = IDENT COLON a = expr
+    { PropTest (n, a) }
 
 name:
   | x = IDENT { x }

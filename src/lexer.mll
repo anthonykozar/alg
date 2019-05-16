@@ -28,6 +28,7 @@ rule token = parse
   | "Relations"         { RELATION }
   | "Axiom"             { AXIOM }
   | "Theorem"           { THEOREM }
+  | "PropertyTest"      { PROPTEST }
   | "forall"            { FORALL }
   | "exists"            { EXISTS }
   | "True"              { TRUE }

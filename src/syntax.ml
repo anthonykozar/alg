@@ -28,6 +28,7 @@ type theory_entry =
   | Predicate of operation list
   | Relation of operation list
   | Axiom of string option * formula
+  | PropTest of string * formula
 
 type theory_name = string
 
