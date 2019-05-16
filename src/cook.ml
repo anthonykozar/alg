@@ -151,18 +151,19 @@ let cook_formula env f =
 
 let split_entries lst =
   List.fold_left
-    (fun (env,eqs,axs) -> function
-       | S.Constant cs -> (List.fold_left extend_const env cs, eqs, axs)
-       | S.Unary us -> (List.fold_left extend_unary env us, eqs, axs)
-       | S.Binary bs -> (List.fold_left extend_binary env bs, eqs, axs)
-       | S.Predicate ps -> (List.fold_left extend_predicate env ps, eqs, axs)
-       | S.Relation rs -> (List.fold_left extend_relation env rs, eqs, axs)
+    (fun (env,eqs,axs,pts) -> function
+       | S.Constant cs -> (List.fold_left extend_const env cs, eqs, axs, pts)
+       | S.Unary us -> (List.fold_left extend_unary env us, eqs, axs, pts)
+       | S.Binary bs -> (List.fold_left extend_binary env bs, eqs, axs, pts)
+       | S.Predicate ps -> (List.fold_left extend_predicate env ps, eqs, axs, pts)
+       | S.Relation rs -> (List.fold_left extend_relation env rs, eqs, axs, pts)
+       | S.PropTest (n,a) -> (env, eqs, axs, (n,a) :: pts)
        | S.Axiom (_,a) ->
            begin match S.as_equation a with
-             | None -> (env, eqs, a :: axs)
-             | Some (t1,t2) -> (env, (t1,t2) :: eqs, axs)
+             | None -> (env, eqs, a :: axs, pts)
+             | Some (t1,t2) -> (env, (t1,t2) :: eqs, axs, pts)
            end)
-    (empty_env, [], [])
+    (empty_env, [], [], [])
     lst
 
 let env_to_array lst =
@@ -185,7 +186,7 @@ let test_right_semimedial = ("right_semimedial", (3, (T.Binary (0, (T.Binary (0,
                                                       T.Binary (0, (T.Binary (0, T.Var 1, T.Var 0)), (T.Binary (0, T.Var 2, T.Var 0))))))
 
 let cook_theory th_name lst =
-  let (env, eqs, axs) = split_entries lst in
+  let (env, eqs, axs, pts) = split_entries lst in
     match Util.find_duplicate (List.map fst (env.const @ env.unary @ env.binary)) with
       | Some op -> Error.fatal "operation %s is declared more than once" op
       | None -> 
