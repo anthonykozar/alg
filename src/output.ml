@@ -99,7 +99,7 @@ struct
               end
             in
             (* Evaluation of property tests sd be in algebra *)
-            let props = List.map (fun (pname, pformula) -> (pname, (Check_model.check_equation a pformula))) th_tests in
+            let props = List.map (fun (pname, pformula) -> (pname, (First_order.check_formula a pformula))) th_tests in
             let propstext = 
               begin match props with
                 | [] -> None

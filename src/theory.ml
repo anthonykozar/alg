@@ -41,8 +41,8 @@ type formula' =
    of the formula. *)
 and formula = int array * formula'
 
-(* A  named property to be tested on each model *)
-type propertytest = string * equation
+(* A named property to be tested on each model *)
+type propertytest = string * formula
 
 type theory = {
   th_name : string;
@@ -110,7 +110,7 @@ let rec string_of_formula' = function
 
 let string_of_formula (a, f) = string_of_int (Array.length a) ^ " |- " ^ string_of_formula' f
 
-let string_of_propertytest (nm, (_, e)) = nm ^ ": " ^ (string_of_equation e)
+let string_of_propertytest (nm, f) = nm ^ ": " ^ (string_of_formula f)
 
 let string_of_theory {th_name=name;
                       th_const=const;

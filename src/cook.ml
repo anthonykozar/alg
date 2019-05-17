@@ -199,5 +199,5 @@ let cook_theory th_name lst =
             T.th_relations = env_to_array env.relations;
             T.th_equations = List.map (cook_equation env) eqs;
             T.th_axioms = List.map (cook_formula env) axs;
-            T.th_prop_tests = [test_commutative; test_idempotent; test_left_semimedial; test_right_semimedial];
+            T.th_prop_tests = List.rev (List.map (fun (n,f) -> (n, (cook_formula env f))) pts);
           }
